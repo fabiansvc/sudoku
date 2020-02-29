@@ -1,71 +1,77 @@
 package model;
 
+import view.AlertBox;
+import view.IAlertBox;
+
 /**
  *
  * @author Fabian Valencia.
  */
 public class Sudoku {
+
     private final String matriz[][];
     private final String numBuscar;
     private final int filaNumBuscar;
     private final int columnaNumBuscar;
     private int filaInicio, columnaInicio, filaFinal, columnaFinal;
+
     /**
      * Constructor de la clase Sudoku.
+     *
      * @param matriz
      * @param numBuscar
      * @param filaNumBuscar
-     * @param columnaNumBuscar 
+     * @param columnaNumBuscar
      */
     public Sudoku(String[][] matriz, String numBuscar, int filaNumBuscar, int columnaNumBuscar) {
         this.matriz = matriz;
         this.numBuscar = numBuscar;
         this.filaNumBuscar = filaNumBuscar;
         this.columnaNumBuscar = columnaNumBuscar;
-    }    
+    }
+
     /**
      * Método que se encarga de buscar el numero por fila.
+     *
      * @return true si lo encuenta
      */
     public boolean encontrarNumeroXFila() {
         for (int i = 0; i < matriz.length; i++) {
-            if (matriz[filaNumBuscar][i].equals(numBuscar)) {
-                if (i != columnaNumBuscar) {
-                    System.out.println("Se encuentra en la fila");                    
-                    return true;
-                }
+            if (matriz[filaNumBuscar][i].equals(numBuscar) && (i != columnaNumBuscar)) {
+
+                return true;
             }
         }
         return false;
     }
+
     /**
      * Método que se encarga de buscar el numero por columna.
+     *
      * @return true si lo encuenta
      */
     public boolean encontrarNumeroxColumna() {
         for (int i = 0; i < matriz.length; i++) {
-            if (matriz[i][columnaNumBuscar].equals(numBuscar)) {
-                if (i != filaNumBuscar) {
-                    System.out.println("Se encuentra en la columna");
-                    return true;
-                }
+            if (matriz[i][columnaNumBuscar].equals(numBuscar) && (i != filaNumBuscar)) {
+
+                return true;
             }
         }
         return false;
     }
+
     /**
      * Método que se encarga de buscar el numero por cuadrante.
+     *
      * @return true si lo encuenta
      */
     public boolean buscarNumeroXCuadrante() {
         buscarCuadrante();
         for (int i = filaInicio; i < filaFinal; i++) {
             for (int j = columnaInicio; j < columnaFinal; j++) {
-                if (matriz[i][j].equals(numBuscar)) {
-                    if (i != filaNumBuscar) {
-                        System.out.println("Se encuentra en el cuadrante");
-                        return true;
-                    }
+                if (matriz[i][j].equals(numBuscar) && (i != filaNumBuscar)) {
+
+                    return true;
                 }
             }
         }
@@ -90,6 +96,25 @@ public class Sudoku {
             }
             i += 3;
         }
+    }
+
+    /**
+     * Método que se encarga de verificar si el sudoku esta completo.
+     *
+     * @return
+     */
+    public boolean sudokuCompleto() {
+        for (int i = 0; i < matriz.length; i++) {
+            for (int j = 0; j < matriz.length; j++) {
+                if (matriz[i][j].equals("0")) {
+                    return false;
+                }
+            }
+        }
+        IAlertBox alert = new AlertBox();
+        alert.showAlert("Felicitaciones", "Ganastes", "Intenta de nuevo");
+        return true;
+
     }
 
 }

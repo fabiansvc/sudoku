@@ -1,0 +1,37 @@
+.text-field {
+    -fx-background-color: white;
+    -fx-text-fill: #00636d;
+    -fx-border-radius: 10;
+    -fx-border: 12px solid;
+    -fx-border-color: red;
+    -fx-font-weight: bold;
+    -fx-font-size: 14px;
+    
+}   
+.text-area {
+    -fx-background-color: #ffeeef;
+    -fx-text-fill: #00636d;
+    -fx-border-color: red;
+    -fx-font-size: 14px;
+    
+}
+
+AnchorPane{
+    -fx-background-color: white;
+}
+
+.button{
+    -fx-cursor: hand;    
+    -fx-background-color: white;
+}
+.label {
+    -fx-pref-height: 34px;
+    -fx-font-weight: bold;
+    -fx-background-radius: 5;
+    -fx-font-size: 14px;
+    -fx-text-fill: red;
+    -fx-padding: 0 10 0 10;   
+}
+.button:hover {
+    -fx-background-color: #ffeeef;    
+}

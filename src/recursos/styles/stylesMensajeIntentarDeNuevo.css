@@ -1,0 +1,25 @@
+.button {
+    -fx-cursor: hand;
+    -fx-background-color: #00636d;
+    -fx-background-radius: 5;
+    -fx-border-radius: 5;
+    -fx-text-fill: white;
+    -fx-font-size: 17;
+}
+
+.button:hover {
+    -fx-background-color: #619aa0;
+    -fx-text-fill: #00636d;
+}
+AnchorPane{
+   -fx-background-color: white;
+}
+.label {
+    -fx-pref-height: 34px;
+    -fx-font-weight: bold;
+    -fx-background-radius: 5;
+    -fx-font-size: 16pt;
+    -fx-text-fill: #00636d;
+    -fx-padding: 0 10 0 10;   
+}
+

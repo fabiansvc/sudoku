@@ -1,15 +1,26 @@
 package model;
+
+
 /**
  *
  * @author Fabian Valencia
  */
-public class Historial {
-    private int fila, columna;
-    private String valor; 
+public class Casilla {
+    private String valor;
+    private int fila, columna, id;
 
-    public Historial(int fila, int columna, String valor) {
+    public Casilla(String valor, int fila, int columna, int id) {
+        this.valor = valor;
         this.fila = fila;
         this.columna = columna;
+        this.id = id;
+    }
+
+    public String getValor() {
+        return valor;
+    }
+
+    public void setValor(String valor) {
         this.valor = valor;
     }
 
@@ -29,12 +40,15 @@ public class Historial {
         this.columna = columna;
     }
 
-    public String getValor() {
-        return valor;
+    public int getId() {
+        return id;
     }
 
-    public void setValor(String valor) {
-        this.valor = valor;
+    public void setId(int id) {
+        this.id = id;
     }
-     
+
+   
+    
+   
 }
