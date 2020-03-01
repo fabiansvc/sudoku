@@ -7,13 +7,12 @@ package model;
  */
 public class Casilla {
     private String valor;
-    private int fila, columna, id;
+    private int fila, columna;
 
-    public Casilla(String valor, int fila, int columna, int id) {
+    public Casilla(String valor, int fila, int columna) {
         this.valor = valor;
         this.fila = fila;
         this.columna = columna;
-        this.id = id;
     }
 
     public String getValor() {
@@ -39,16 +38,7 @@ public class Casilla {
     public void setColumna(int columna) {
         this.columna = columna;
     }
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
-
-   
+  
     
    
 }

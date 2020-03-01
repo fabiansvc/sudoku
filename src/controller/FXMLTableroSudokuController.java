@@ -8,7 +8,6 @@ import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
-import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
@@ -30,24 +29,31 @@ import view.IAlertBox;
  */
 public class FXMLTableroSudokuController implements Initializable {
 
+    //Variables de interfaz gráfica.
     @FXML
     private AnchorPane anchorPane;
-    private String matriz[][];
-    private TextField[][] txts;
-    private ArrayList<Casilla> jugadas;
-    private int incrementadorHistorial;
-    @FXML
-    private TextArea historialTxA;
-    private int filaActual, columnaActual;
-    private String valorActual;
     @FXML
     private Button btnDeshacer;
     @FXML
     private Button btnRehacer;
     @FXML
     private Button btnAyuda;
+    @FXML
+    private TextArea historialTxA;
+
+    //Estructura de datos.
+    private String matriz[][];
+    private TextField[][] txts;
+    private ArrayList<Casilla> jugadas;
+    private ArrayList<Casilla> casillasEliminadas;
+
+    //Variables para la jugabilidad.
+    private int incrementadorHistorial;
+    private int filaActual, columnaActual;
+    private String valorActual, valorPresionado;
     private boolean activarSugerencia;
-    private  boolean primeraJugada;
+    private boolean primeraJugada;
+
     /**
      * Initializes the controller class.
      *
@@ -57,72 +63,57 @@ public class FXMLTableroSudokuController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         cargarImagenesBotones();
-        jugadas = new ArrayList<>();
-        incrementadorHistorial = -1;
+
+        matriz = new String[9][9];
         txts = new TextField[9][9];
+        jugadas = new ArrayList<>();
+        casillasEliminadas = new ArrayList<>();
+
+        incrementadorHistorial = -1;
         activarSugerencia = false;
         primeraJugada = true;
-        llenarTablero();
+
         cargarTablero();
     }
 
     /**
-     * Método que llena toda la matriz con ceros.
-     */
-    private void llenarTablero() {
-        matriz = new String[9][9];
-        for (int i = 0; i < matriz.length; i++) {
-            for (int j = 0; j < matriz.length; j++) {
-                matriz[i][j] = "0";
-            }
-        }
-    }
-
-    /**
-     * Método que se encarga de pintar el tablero.
+     * Método que se encarga de pintar el tablero 9x9 del sudoku con los valores
+     * predeterminados en el archivo.
      */
     private void cargarTablero() {
         Archivo archivo = new Archivo();
         String cadena = archivo.cargarArchivo("archivo.txt");
         int incrementadorCadena = 0;
-
         GridPane gridpane = new GridPane();
         gridpane.setLayoutX(25);
         gridpane.setLayoutY(25);
         for (int i = 0; i < 9; i++) {
             for (int j = 0; j < 9; j++) {
                 TextField txt = new TextField();
-
-                String valor = String.valueOf(cadena.charAt(incrementadorCadena));
-
-                incrementadorCadena++;
-
-                if (!(valor.equals("-"))) {
-                    txt.setText(valor);
-                    txt.setEditable(false);
-                    matriz[i][j] = valor;
-
-                } else {
-                    txt.setStyle("-fx-background-color: white;");
-                }
-
-                if ((j < 3 && (i < 3 || i > 5)) || (j > 5 && (i < 3 || i > 5)) || (j > 2 && j < 6 && i > 2 && i < 6)) {
-                    txt.setStyle("-fx-border-color: black; ");
-
-                }
-
                 txt.setPrefHeight(35);
                 txt.setPrefWidth(35);
                 GridPane.setRowIndex(txt, i);
                 GridPane.setColumnIndex(txt, j);
-                gridpane.getChildren().addAll(txt);
                 txts[i][j] = txt;
+                String valor = String.valueOf(cadena.charAt(incrementadorCadena));
+                incrementadorCadena++;
+                if (!(valor.equals("-"))) {
+                    txt.setText(valor);
+                    txt.setEditable(false);
+                    matriz[i][j] = valor;
+                } else {
+                    txt.setStyle("-fx-background-color: white;");
+                    matriz[i][j] = "";
+                }
+                if ((j < 3 && (i < 3 || i > 5)) || (j > 5 && (i < 3 || i > 5))
+                        || (j > 2 && j < 6 && i > 2 && i < 6)) {
+                    txt.setStyle("-fx-border-color: black; ");
+                }
+                gridpane.getChildren().addAll(txt);
                 keyPressed(txt, i, j);
                 txtClickPressed(txt, i, j);
-
             }
         }
-
         anchorPane.getChildren().add(gridpane);
     }
 
@@ -137,23 +128,36 @@ public class FXMLTableroSudokuController implements Initializable {
     private void keyPressed(TextField txt, int fila, int columna) {
         txt.setOnKeyPressed((KeyEvent e) -> {
             txt.deletePreviousChar();
-            if (isNumeric(e.getText()) && txt.getText().length() < 1) {
+            if (isNumeric(e.getText()) && Integer.parseInt(e.getText()) > 0 && Integer.parseInt(e.getText()) < 10) {
                 validarNumero(fila, columna, e.getText());
-            } else {
+            } else if ((e.getCode().toString()).equals("BACK_SPACE")) {
                 asignarAJugadasRealizadas(fila, columna, "");
-                matriz[fila][columna] = "0";
+                matriz[fila][columna] = "";
+                asignarACasillasBorradas(fila, columna, valorPresionado);
+            } else {
+                IAlertBox alert = new AlertBox();
+                alert.showAlert("Error", "Caracter no permitido", "Solo se admiten numeros del 1 al 9 o la tecla borrar.");
             }
             imprimirMatriz(matriz);
         });
 
     }
 
+    /**
+     * Método que escucha si se presiona un campo de texto capturando la fila,
+     * la columna y el valor.
+     *
+     * @param txt
+     * @param fila
+     * @param columna
+     */
     private void txtClickPressed(TextField txt, int fila, int columna) {
         txt.setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent event) {
                 filaActual = fila;
                 columnaActual = columna;
+                valorPresionado = txt.getText();
                 activarSugerencia = true;
             }
         });
@@ -176,8 +180,8 @@ public class FXMLTableroSudokuController implements Initializable {
         } else if (sudoku.sudokuCompleto()) {
             IAlertBox alert = new AlertBox();
             alert.showAlert("Felicitaciones", "Ganastes", "Intenta de nuevo");
-        } else {           
-            if(primeraJugada){
+        } else {
+            if (primeraJugada) {
                 asignarAJugadasRealizadas(fila, columna, "");
                 primeraJugada = false;
             }
@@ -195,11 +199,21 @@ public class FXMLTableroSudokuController implements Initializable {
      */
     private void asignarAJugadasRealizadas(int fila, int columna, String valor) {
         incrementadorHistorial += 1;
-        Casilla casilla = new Casilla(valor, fila, columna, incrementadorHistorial);
+        Casilla casilla = new Casilla(valor, fila, columna);
         jugadas.add(casilla);
         filaActual = fila;
         columnaActual = columna;
         valorActual = valor;
+    }
+    /**
+     * Método que asigna una casilla borrada.
+     * @param fila
+     * @param columna
+     * @param valor 
+     */
+    private void asignarACasillasBorradas(int fila, int columna, String valor) {
+        Casilla casilla = new Casilla(valor, fila, columna);
+        casillasEliminadas.add(casilla);
     }
 
     /**
@@ -227,6 +241,9 @@ public class FXMLTableroSudokuController implements Initializable {
         for (int i = 0; i < matriz.length; i++) {
             System.out.print("|");
             for (int j = 0; j < matriz[i].length; j++) {
+                if (matriz[i][j].equals("")) {
+                    System.out.print("0");
+                }
                 System.out.print(matriz[i][j] + " ");
             }
             System.out.println("|");
@@ -250,7 +267,7 @@ public class FXMLTableroSudokuController implements Initializable {
                 matriz[fila][columna] = valor;
             } else {
                 txts[fila][columna].setText("");
-                matriz[fila][columna] = "0";
+                matriz[fila][columna] = "";
             }
 
             imprimirMatriz(matriz);
@@ -295,16 +312,19 @@ public class FXMLTableroSudokuController implements Initializable {
     }
 
     /**
-     * Método que escucha el boton ayuda.
-     *
+     * Método que escucha el boton ayuda, para sugerir un número en una casilla solicitada
+     * por el usuario, cumpliendo la condición de que no haya ingresado anteriormente
+     * un número en esa casilla.     *
      * @param event
      */
     @FXML
     private void btnAyudaPressed(ActionEvent event) {
+        buscarNumeroEliminado();
         if (activarSugerencia) {
             for (int i = 1; i < 10; i++) {
                 Sudoku sudoku = new Sudoku(matriz, String.valueOf(i), filaActual, columnaActual);
-                if (!(sudoku.buscarNumeroXCuadrante() || sudoku.encontrarNumeroXFila() || sudoku.encontrarNumeroxColumna())) {
+                if (!buscarNumeroEliminado() && (valorPresionado.equals("")) && !(sudoku.buscarNumeroXCuadrante()
+                        || sudoku.encontrarNumeroXFila() || sudoku.encontrarNumeroxColumna())) {
                     IAlertBox alert = new AlertBox();
                     alert.showAlert("Sudoku", "Sugerencia", "Puedes ingresar el número: " + i);
                     break;
@@ -313,9 +333,24 @@ public class FXMLTableroSudokuController implements Initializable {
             }
         } else {
             IAlertBox alert = new AlertBox();
-            alert.showAlert("Sudoku", "Información", "Selecciona una fila y una columna para sugerirle un número.");
+            alert.showAlert("Sudoku", "Información", "Selecciona una fila y una columna vacia, "
+                    + "donde no se haya ingresado un número para sugerirle un número.");
         }
 
+    }
+    /**
+     * Método que busca si el numero ha sido eliminado anteriormente en esa casilla.
+     * @return verdadero si lo encuentra.
+     */
+    private boolean buscarNumeroEliminado() {
+        for (int i = 0; i < casillasEliminadas.size(); i++) {
+            if (!(casillasEliminadas.get(i).getValor().equals("0"))
+                    && filaActual == casillasEliminadas.get(i).getFila()
+                    && columnaActual == casillasEliminadas.get(i).getColumna()) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /**

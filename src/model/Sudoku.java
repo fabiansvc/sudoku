@@ -103,7 +103,7 @@ public class Sudoku {
     public boolean sudokuCompleto() {
         for (int i = 0; i < matriz.length; i++) {
             for (int j = 0; j < matriz.length; j++) {
-                if (matriz[i][j].equals("0")) {
+                if (matriz[i][j].equals("")) {
                     return false;
                 }
             }
