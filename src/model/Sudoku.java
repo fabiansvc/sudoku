@@ -1,8 +1,5 @@
 package model;
 
-import view.AlertBox;
-import view.IAlertBox;
-
 /**
  *
  * @author Fabian Valencia.
@@ -23,7 +20,8 @@ public class Sudoku {
      * @param filaNumBuscar
      * @param columnaNumBuscar
      */
-    public Sudoku(String[][] matriz, String numBuscar, int filaNumBuscar, int columnaNumBuscar) {
+    public Sudoku(String[][] matriz, String numBuscar,
+            int filaNumBuscar, int columnaNumBuscar) {
         this.matriz = matriz;
         this.numBuscar = numBuscar;
         this.filaNumBuscar = filaNumBuscar;
@@ -37,8 +35,8 @@ public class Sudoku {
      */
     public boolean encontrarNumeroXFila() {
         for (int i = 0; i < matriz.length; i++) {
-            if (matriz[filaNumBuscar][i].equals(numBuscar) && (i != columnaNumBuscar)) {
-
+            if (matriz[filaNumBuscar][i].equals(numBuscar)
+                    && (i != columnaNumBuscar)) {
                 return true;
             }
         }
@@ -52,8 +50,8 @@ public class Sudoku {
      */
     public boolean encontrarNumeroxColumna() {
         for (int i = 0; i < matriz.length; i++) {
-            if (matriz[i][columnaNumBuscar].equals(numBuscar) && (i != filaNumBuscar)) {
-
+            if (matriz[i][columnaNumBuscar].equals(numBuscar) && 
+                    (i != filaNumBuscar)) {
                 return true;
             }
         }
@@ -67,10 +65,9 @@ public class Sudoku {
      */
     public boolean buscarNumeroXCuadrante() {
         buscarCuadrante();
-        for (int i = filaInicio; i < filaFinal; i++) {
-            for (int j = columnaInicio; j < columnaFinal; j++) {
+        for (int i = filaInicio; i <= filaFinal; i++) {
+            for (int j = columnaInicio; j <= columnaFinal; j++) {
                 if (matriz[i][j].equals(numBuscar) && (i != filaNumBuscar)) {
-
                     return true;
                 }
             }
@@ -86,7 +83,8 @@ public class Sudoku {
         while (i < 9) {
             int j = 0;
             while (j < 9) {
-                if (filaNumBuscar >= i && filaNumBuscar <= i + 2 && columnaNumBuscar >= j && columnaNumBuscar <= j + 2) {
+                if (filaNumBuscar >= i && filaNumBuscar <= i + 2
+                        && columnaNumBuscar >= j && columnaNumBuscar <= j + 2) {
                     this.filaInicio = i;
                     this.columnaInicio = j;
                     this.filaFinal = i + 2;
@@ -97,7 +95,6 @@ public class Sudoku {
             i += 3;
         }
     }
-
     /**
      * Método que se encarga de verificar si el sudoku esta completo.
      *
@@ -110,11 +107,8 @@ public class Sudoku {
                     return false;
                 }
             }
-        }
-        IAlertBox alert = new AlertBox();
-        alert.showAlert("Felicitaciones", "Ganastes", "Intenta de nuevo");
+        }       
         return true;
-
     }
 
 }

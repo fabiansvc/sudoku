@@ -6,7 +6,7 @@ import view.TableroSudokuStage;
 
 /**
  *
- * @author stive
+ * @author Fabián Valencia
  */
 public class Sudoku extends Application {
     

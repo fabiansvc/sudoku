@@ -24,7 +24,7 @@ public class TableroSudokuStage extends Stage {
             Scene scene = new Scene(root);
             setScene(scene);
             setTitle("Sudoku");
-            //getIcons().add(new Image("/recursos/imagenes/iconTriqui.png"));
+            getIcons().add(new Image("/recursos/imagenes/sudoku.png"));
             setResizable(false);
             show();
         } catch (IOException e) {

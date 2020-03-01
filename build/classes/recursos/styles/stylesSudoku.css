@@ -6,14 +6,19 @@
     -fx-border-color: red;
     -fx-font-weight: bold;
     -fx-font-size: 14px;
-    
+    -fx-alignment: center;
+    -fx-background-color: white;  
+
 }   
+.text-field:hover{
+    -fx-background-color: #ffeeef;  
+}
 .text-area {
     -fx-background-color: #ffeeef;
     -fx-text-fill: #00636d;
     -fx-border-color: red;
     -fx-font-size: 14px;
-    
+    -fx-font-weight: bold;
 }
 
 AnchorPane{

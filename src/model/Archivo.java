@@ -15,22 +15,24 @@ import java.util.logging.Logger;
 public class Archivo {
     /**
      * Método que se encarga de cargar el archivo txt.
-     * @param nomArchivo
+     * @param url
      * @return 
      */
-    public static String cargarArchivo(String nomArchivo) {
-        String[][] var = new String[9][9];
+    
+    public Archivo() {
+    }
+
+    public String cargarArchivo(String url) {
         File archivo;
         FileReader fr;
         BufferedReader br;
         String cadena = "";
-        archivo = new File(nomArchivo);
+        archivo = new File(url);
         try {
             fr = new FileReader(archivo);
             br = new BufferedReader(fr);
 
             String line;
-            int i = 0;
             while ((line = br.readLine()) != null) {
                 cadena += line;
             }
